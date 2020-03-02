@@ -4,7 +4,7 @@ const express = require("express");
 const router = express.Router();
 // const cors = require("cors");
 const Pusher = require("pusher");
-const NewsAPI = require("newsAPI");
+const NewsAPI = require("newsapi");
 
 // import Pusher from "pusher";
 // import NewsAPI from "newsapi";
