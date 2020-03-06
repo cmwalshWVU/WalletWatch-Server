@@ -1,5 +1,6 @@
 require("dotenv").config({ path: "../../keys/keys.env" });
 
+const axios = require("axios");
 const express = require("express");
 const plaid = require("plaid");
 const router = express.Router();
