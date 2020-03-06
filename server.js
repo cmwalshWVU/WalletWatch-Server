@@ -7,6 +7,7 @@ const passport = require("passport");
 const users = require("./routes/api/users");
 const plaid = require("./routes/api/plaid");
 const news = require("./routes/api/news");
+const prices = require("./routes/api/prices");
 
 const app = express();
 
@@ -41,6 +42,7 @@ require("./config/passport")(passport);
 app.use("/api/users", users);
 app.use("/api/plaid", plaid);
 app.use("/api/news", news);
+app.use("/api/prices", prices);
 
 const port = process.env.PORT || 5000;
 
