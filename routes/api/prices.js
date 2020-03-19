@@ -16,10 +16,12 @@ const User = require("../../models/User");
 // @access Private
 router.get("/top", passport.authenticate("jwt", { session: false }),
     (req, res) => {
-    axios.get("https://api.coinmarketcap.com/v1/ticker/?limit=20")
+        console.log("TEST")
+    axios.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=5b82bdf3-bf6d-4153-855b-635c1519b7a8")
         .then(response => {
-            res.json(response.data);
             console.log(response.data)
+
+            res.json(response.data);
         })
         .catch(err => console.log(err));
     }
