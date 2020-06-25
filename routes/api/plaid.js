@@ -77,23 +77,31 @@ router.get("/accounts", passport.authenticate("jwt", { session: false }),
 // @access Private
 router.post("/accounts/transactions",
     (req, res) => {
+        console.log("calling get transactions")
+
         const now = moment();
         const today = now.format("YYYY-MM-DD");
         const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD"); // Change this if you want more transactions
         let transactions = [];
         const accounts = req.body;
+        console.log("accounts " + accounts)
         if (accounts) {
             accounts.forEach(function(account) {
+                console.log("calling get transactions for account:" + account.institutionName)
                 ACCESS_TOKEN = account.accessToken;
                 const institutionName = account.institutionName;
                 client.getTransactions(ACCESS_TOKEN, thirtyDaysAgo, today)
                     .then(response => {
+                        console.log("got transactions")
+                        console.log(response.transactions)
                         transactions.push({
                         accountName: institutionName,
                         transactions: response.transactions
                     });
                     // Don't send back response till all transactions have been added
                     if (transactions.length === accounts.length) {
+                        console.log("returning transactions")
+                        console.log(transactions)
                         res.json(transactions);
                     }
                 })
@@ -105,21 +113,25 @@ router.post("/accounts/transactions",
 
 router.post("/accounts/balances",
     (req, res) => {
+        console.log("calling get balances")
+
         // const now = moment();
         // const today = now.format("YYYY-MM-DD");
         // const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD"); // Change this if you want more transactions
         let balances = [];
         const accounts = req.body;
         if (accounts) {
+            console.log(accounts)
             accounts.forEach(function(account) {
                 ACCESS_TOKEN = account.accessToken;
                 const institutionName = account.institutionName;
                 client.getBalance(ACCESS_TOKEN)
                     .then(response => {
-                        // console.log(response)
+                        console.log("got transactions")
+                        console.log(response)
                         let accountBalances = [];
                         response.accounts.forEach(function(account) {
-                            // console.log(account.balances)
+                            console.log(account.balances)
                             accountBalances.push({
                                 accountName: institutionName,
                                 accountType: account.name,
