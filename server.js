@@ -22,11 +22,11 @@ app.use(bodyParser.json());
 // DB Config
 const db = require("./config/keys").mongoURI;
 
-console.log(`MONGO URI: ${process.env.MONGO_URI}`)
+console.log(`MONGO URI: ${process.env.REACT_MONGO_URI}`)
 // Connect to MongoDB
 mongoose
   .connect(
-    process.env.MONGO_URI,
+    process.env.REACT_MONGO_URI,
     { useNewUrlParser: true }
   )
   .then(() => console.log("MongoDB successfully connected"))
