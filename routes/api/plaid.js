@@ -14,7 +14,7 @@ const client = new plaid.Client(
     process.env.REACT_PLAID_CLIENT_ID,
     process.env.REACT_PLAID_SECRET,
     process.env.REACT_PLAID_PUBLIC_KEY,
-    process.env.REACT_plaid.environments.sandbox,
+    plaid.environments.sandbox,
     { version: "2018-05-22" }
 );
 var PUBLIC_TOKEN = null;
