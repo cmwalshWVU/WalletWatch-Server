@@ -11,13 +11,14 @@ const mongoose = require("mongoose");
 const Account = require("../../models/Account");
 const User = require("../../models/User");
 
+
 // @route GET api/plaid/accounts
 // @desc Get all accounts linked with plaid for a specific user
 // @access Private
 router.get("/top", passport.authenticate("jwt", { session: false }),
     (req, res) => {
         console.log("TEST")
-    axios.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=5b82bdf3-bf6d-4153-855b-635c1519b7a8")
+    axios.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=" + process.env.REACT_CMC_API_KEY)
         .then(response => {
             console.log(response.data)
 

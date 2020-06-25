@@ -11,15 +11,14 @@ const NewsAPI = require("newsapi");
 const axios = require("axios");
 
 const pusher = new Pusher({
-    appId: "827235",
-    key: "5994b268d4758d733605",
-    secret: "2b842a1cd8a65cc317f4",
-    cluster: "us2",
-    encrypted: true
-  });
+  appId: process.env.REACT_PUSHER_APP_ID,
+  key: process.env.REACT_PUSHER_APP_KEY,
+  secret: process.env.REACT_PUSHER_APP_SECRET,
+  cluster: process.env.REACT_PUSHER_APP_CLUSTER,
+});
 
 
-const newsapi = new NewsAPI("1e37ddecb5a5453498a7aa1cfc0634ce");
+const newsapi = new NewsAPI(process.env.REACT_NEWS_API_KEY);
 
 setTimeout(() => cryptoCompareNews(), 10000);
 

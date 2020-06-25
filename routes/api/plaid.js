@@ -10,16 +10,12 @@ const mongoose = require("mongoose");
 const Account = require("../../models/Account");
 const User = require("../../models/User");
 
-const PLAID_CLIENT_ID = process.env.PLAID_CLIENT_ID;
-const PLAID_SECRET = process.env.PLAID_SECRET;
-const PLAID_PUBLIC_KEY = process.env.PLAID_PUBLIC_KEY;
-
 const client = new plaid.Client(
-  PLAID_CLIENT_ID,
-  PLAID_SECRET,
-  PLAID_PUBLIC_KEY,
-  plaid.environments.sandbox,
-  { version: "2018-05-22" }
+    process.env.REACT_PLAID_CLIENT_ID,
+    process.env.REACT_PLAID_SECRET,
+    process.env.REACT_PLAID_PUBLIC_KEY,
+    process.env.REACT_plaid.environments.sandbox,
+    { version: "2018-05-22" }
 );
 var PUBLIC_TOKEN = null;
 var ACCESS_TOKEN = null;
@@ -29,39 +25,26 @@ var ITEM_ID = null;
 // @route POST api/plaid/accounts/add
 // @desc Trades public token for access token and stores credentials in database
 // @access Private
-router.post("/accounts/add", passport.authenticate("jwt", { session: false }),
+
+router.post("/accounts/add",
     (req, res) => {
         console.log("Adding new Account");
-        PUBLIC_TOKEN = req.body.public_token;
-        const userId = req.user.id;
-        const institution = req.body.metadata.institution;
+        console.log(req)
+        PUBLIC_TOKEN = req.body.plaidData.public_token;
+        const userId = req.body.userId;
+        const institution = req.body.plaidData.metadata.institution;
         const { name, institution_id } = institution;
         if (PUBLIC_TOKEN) {
             client.exchangePublicToken(PUBLIC_TOKEN)
                 .then(exchangeResponse => {
-                    ACCESS_TOKEN = exchangeResponse.access_token;
-                    ITEM_ID = exchangeResponse.item_id;
-                    // Check if account already exists for specific user
-                    Account.findOne({
-                    userId: req.user.id,
-                    institutionId: institution_id
-                    })
-                    .then(account => {
-                        if (account) {
-                        console.log("Account already exists");
-                        } else {
-                            const newAccount = new Account({
-                                userId: userId,
-                                accessToken: ACCESS_TOKEN,
-                                itemId: ITEM_ID,
-                                institutionId: institution_id,
-                                institutionName: name
-                            });
-                            newAccount.save().then(account => res.json(account));
-                        }
-                    }).catch(err => console.log(err)); // Mongo Error
+                    const ACCESS_TOKEN = exchangeResponse.access_token;
+                    const ITEM_ID = exchangeResponse.item_id;
+                    res.json(exchangeResponse)
                 })
-            .catch(err => console.log(err)); // Plaid Error
+            .catch(err => {
+                console.log(err)
+                res.json(null)
+            }); // Plaid Error
         }
     }
 );
@@ -92,7 +75,7 @@ router.get("/accounts", passport.authenticate("jwt", { session: false }),
 // @route POST api/plaid/accounts/transactions
 // @desc Fetch transactions from past 30 days from all linked accounts
 // @access Private
-router.post("/accounts/transactions", passport.authenticate("jwt", { session: false }),
+router.post("/accounts/transactions",
     (req, res) => {
         const now = moment();
         const today = now.format("YYYY-MM-DD");
@@ -120,7 +103,7 @@ router.post("/accounts/transactions", passport.authenticate("jwt", { session: fa
     }
 );
 
-router.post("/accounts/balances", passport.authenticate("jwt", { session: false }),
+router.post("/accounts/balances",
     (req, res) => {
         // const now = moment();
         // const today = now.format("YYYY-MM-DD");
